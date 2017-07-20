@@ -24,60 +24,54 @@ function Get-MDTDirectory {
         Write-Output
 }
 
-
 function Install-LTIPSGallery {
+    param ( 
+        $Name = 'MDTLTIPSSampleAction'
+    )
 
     Write-Verbose "Verify MDT is installed"
     $MDTPath = Get-MDTDirectory
     if ( -not $MDTPath ) { throw "MDT is not installed" }
     if ( -not ( Test-Path $MDTPath\bin\Actions.xml ) ) { throw "MDT actions.xml not found" }
 
-    $Actions = get-content -Path $MDTPath\bin\Actions.xml -Raw
-    if ( -not $Actions.Contains('BDD_MDTLTIPSSampleControl') ) {
-        Write-Verbose "patch Actions.xml"
-        copy-item -Path $MDTPath\bin\Actions.xml -Destination $MDTPath\bin\Actions.bak.xml
-
-        $NewAction = @"
+    if ( -not ( Test-Path "$MDTPath\bin\Actions.$($Name).xml" ) ) {
+        Write-verbose "Create the XML file $MDTPath\bin\Actions.$($Name).xml"
+        @"
+<actions>
 	<action>
 		<Category>General</Category>
 		<Name>Install PowerShellGet Action</Name>
 		<Type>BDD_MDTLTIPSSampleControl</Type>
-		<Assembly>MDTLTIPSSampleAction</Assembly>
-		<Class>MDTLTIPSSampleAction.MDTLTIPSSampleControl</Class>
-		<Action>powershell.exe -Command  Install-Package -Force -ForceBootStrap -Name (New-Object -COMObject Microsoft.SMS.TSEnvironment).Value('Package')</Action>
+		<Assembly>$Name</Assembly>
+		<Class>$($Name).MDTLTIPSSampleControl</Class>
+		<Action>powershell.exe -Command  Install-Package -Force -ForceBootStrap -Name '%Package%'</Action>
 		<Property type="string" name="Package" />
 	</action>
-"@
-
-        $Actions.Replace('</actions>', $NewAction + "`r`n" + '</actions>') | Out-File -Encoding ascii -FilePath $MDTPath\bin\Actions.xml
+</actions>
+"@ | out-file -Encoding ascii -FilePath "$MDTPath\bin\Actions.$($Name).xml"
     }
 
     Write-verbose "Install the control"
-    Copy-Item -Force -path $PSScriptRoot\MDTLTIPSSampleAction.dll -Destination $MDTPath\bin
-    Copy-Item -Force -path $PSScriptRoot\MDTLTIPSSampleAction.pdb -Destination $MDTPath\bin -ErrorAction SilentlyContinue
+    Copy-Item -Force -path $PSScriptRoot\$($Name).dll -Destination $MDTPath\bin
+    Copy-Item -Force -path $PSScriptRoot\$($Name).pdb -Destination $MDTPath\bin -ErrorAction SilentlyContinue
 
-    Write-verbose "MDTLTIPSSampleAction Installed"
+    Write-verbose "$Name Installed"
 
 }
 
 function UnInstall-LTIPSGallery {
+    param ( 
+        $Name = 'MDTLTIPSSampleAction'
+    )
 
     Write-Verbose "Verify MDT is installed"
     $MDTPath = Get-MDTDirectory
     if ( -not $MDTPath ) { throw "MDT is not installed" }
     if ( -not ( Test-Path $MDTPath\bin\Actions.xml ) ) { throw "MDT actions.xml not found" }
 
-    Write-Verbose "remove binaries"
-    remove-item $MDTPath\bin\MDTLTIPSSampleAction.dll,$MDTPath\bin\MDTLTIPSSampleAction.pdb -ErrorAction SilentlyContinue
+    Write-Verbose "remove $Name files"
+    remove-item "$MDTPath\bin\$($Name).dll","$MDTPath\bin\$($Name).pdb","$MDTPath\bin\Actions.$($Name).xml" -ErrorAction SilentlyContinue
 
-    [xml]$Actions = get-content -Path $MDTPath\bin\Actions.xml -Raw
-    $FoundAction = $Actions.actions.action | where-object type -eq 'BDD_MDTLTIPSSampleControl'
-    if ( $FoundAction ) {
-        Write-Verbose 'remove XML blob'
-        $Actions.actions.RemoveChild($FoundAction) | out-null
-        $Actions.Save("$MDTPath\bin\Actions.xml")
-    }
-
-    Write-verbose "MDTLTIPSSampleAction removed"
+    Write-verbose "$Name removed"
 
 }
