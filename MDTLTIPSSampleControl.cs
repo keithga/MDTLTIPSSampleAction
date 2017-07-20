@@ -38,7 +38,7 @@ namespace MDTLTIPSSampleAction
         {
             InitializeComponent();
 
-            txtParentActionType.Text = "PowerShellGallery action";
+            txtParentActionType.Text = "PowerShellGet action";
             this.PackageName.Text = this.PropertyManager["Package"].StringValue;
 
             // Set up the validators

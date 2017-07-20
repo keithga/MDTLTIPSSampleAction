@@ -40,7 +40,7 @@ function Install-LTIPSGallery {
         $NewAction = @"
 	<action>
 		<Category>General</Category>
-		<Name>Run PowerShellGallery Action</Name>
+		<Name>Install PowerShellGet Action</Name>
 		<Type>BDD_MDTLTIPSSampleControl</Type>
 		<Assembly>MDTLTIPSSampleAction</Assembly>
 		<Class>MDTLTIPSSampleAction.MDTLTIPSSampleControl</Class>
