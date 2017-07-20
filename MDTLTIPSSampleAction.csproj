@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E45E853A-A0DA-4C31-9141-4651844B8F85}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MDTLTIPSGalleryAction</RootNamespace>
-    <AssemblyName>MDTLTIPSGalleryAction</AssemblyName>
+    <RootNamespace>MDTLTIPSSampleAction</RootNamespace>
+    <AssemblyName>MDTLTIPSSampleAction</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -66,11 +66,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Build.ps1" />
-    <None Include="MDTLTIPSSampleControl.psm1" />
+    <None Include="MDTLTIPSSampleAction.psm1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)\MDTLTIPSGalleryAction.dll" "C:\Program Files\Microsoft Deployment Toolkit\Bin"
-copy "$(TargetDir)\MDTLTIPSGalleryAction.pdb" "C:\Program Files\Microsoft Deployment Toolkit\Bin"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)MDTLTIPSSampleAction.dll" "C:\Program Files\Microsoft Deployment Toolkit\Bin"
+copy "$(TargetDir)MDTLTIPSSampleAction.pdb" "C:\Program Files\Microsoft Deployment Toolkit\Bin"</PostBuildEvent>
   </PropertyGroup>
 </Project>
