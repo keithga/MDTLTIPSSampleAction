@@ -55,7 +55,7 @@ Secondly, we'll need to add an <action> element to the actions.xml file.
 </action>
 ```
 
-For this sample, I included a PowerShell libary module with two functions, one to register the new control, the other to remove the contorl. Easy!
+For this sample, I included a PowerShell libary module with two functions, one to register the new control, the other to remove the control. Easy!
 
 ### The Sample
 
@@ -75,4 +75,5 @@ Well I created this sample, because I have some ideas for some MDT LiteTouch (an
 - Run scripts and modules from PowerShellGallery.com
 - Other ideas, let me know (comments or e-mail)
 
-- keith
+
+keith
