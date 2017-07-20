@@ -3,21 +3,72 @@ MDT Litetouch Action Property Page Sample
 
 ![Fancy Example](/Graphics/FancyGraphic.PNG)
 
-### Background
+## Background
 
 MDT has several pre-defined pages for common task sequence editing tasks. You've seen then in the MDT Litetouch Task Sequence Editor, under 
 General, Disks, Images, Settings, and Roles.
 
 They help abstract the ugly command line and scripting code behind the scenes for the user. 
 
-This sample 
+Recently I had an idea for a super-wiz-bang property page type for MDT Litetouch, and asked "are there any MDT LTI samples out there?". I knew Config Mgr had a [SDK Sample](http://go.microsoft.com/fwlink/p/?LinkId=248167) and I've been using it for a while now to create SCCM Task Sequence Actions pages.
 
+The answer came back "There was an MDT Litetouch SDK, but not anymore." (Long story for another day)
 
-### Future 
-Commin up next:
+"Someone should create a sample!" I said!
 
-Fancy UI pages for:
+"Great idea Keith, go figure it out and publish it!" For those of you who wonder what it takes to become a Microsoft MVP, it's stuff like this, so here we go.
 
-Ideas?!?! - let me know in the comments below...  
+## The Basics
+
+### C# 
+
+MDT Task Sequence Action Pages are simply C# Windows Form Control Library, with some standard API interfaces so it can be called from the Litetouch Wizard Host. 
+The MDT team designed the API to closly resemble the System Center Configuration Manager Action Page API.
+- There are entry points for when the control is initialized.
+- There are entry points for when the "OK" and "Apply" buttons are pressed.
+- There is access to the PropertyManager used to change the strings within the TS.XML file.
+
+There are several dependent classes required by the sample, they are contained in the 'c:\program files\Microsoft Deployment Toolkit\bin\Microsoft.BDD.Workbench.dll' assembly, 
+so you will need add this reference to your project.
+
+Anything else you want to add in the control, can be done if you know the correct C# code to get the job done.
+
+### Registration
+
+Once you have created the DLL Library, we will need to add it so MDT Litetouch console knows about it.
+
+First off, copy the DLL to the 'c:\program files\Microsoft Deployment Toolkit\bin\' folder.
+
+Secondly, we'll need to modify the actions.xml file.
+
+```xml
+<action>
+	<Category>General</Category>
+	<Name>Install PowerShellGet Action</Name>
+	<Type>BDD_MDTLTIPSSampleControl</Type>
+	<Assembly>MDTLTIPSSampleAction</Assembly>
+	<Class>MDTLTIPSSampleAction.MDTLTIPSSampleControl</Class>
+	<Action>powershell.exe -Command  Install-Package -Force -ForceBootStrap -Name (New-Object -COMObject Microsoft.SMS.TSEnvironment).Value('Package')</Action>
+	<Property type="string" name="Package" />
+</action>
+```
+
+For this sample, I Created a PowerShell libary module with two functions, one to register the new control, the other to remove the contorl. Easy!
+
+### The Sample
+
+The sample in this case is pretty small.
+
+There is one TextBox (as shown above), that prompts the user for the name of a PowerShell Package. 
+
+The package name get's added to the TS.XML, allong with the command, in this case it calls PowerShell.exe with the cmdlet Install-Package. We use COM to connect to the SMS environment space to get the package name and go.
+
+## Future 
+
+Well I created this sample, because I have some ideas for some MDT LiteTouch (and SCCM) Action controls. 
+
+- Fancy UI for installation of applications through Chocolatey
+- Run scripts and modules from PowerShellGallery.com
+- Other ideas, let me know (comments or e-mail)
 
 - keith
